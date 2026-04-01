@@ -1,14 +1,10 @@
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
-  const adapter = new PrismaLibSql({
-    url: process.env.DATABASE_URL ?? "file:./prisma/dev.db",
-  });
+  const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
   return new PrismaClient({ adapter });
 }
 
