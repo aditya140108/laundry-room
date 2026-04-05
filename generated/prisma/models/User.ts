@@ -38,18 +38,21 @@ export type UserMinAggregateOutputType = {
   userID: number | null
   bagNo: string | null
   isCollected: boolean | null
+  email: string | null
 }
 
 export type UserMaxAggregateOutputType = {
   userID: number | null
   bagNo: string | null
   isCollected: boolean | null
+  email: string | null
 }
 
 export type UserCountAggregateOutputType = {
   userID: number
   bagNo: number
   isCollected: number
+  email: number
   _all: number
 }
 
@@ -66,18 +69,21 @@ export type UserMinAggregateInputType = {
   userID?: true
   bagNo?: true
   isCollected?: true
+  email?: true
 }
 
 export type UserMaxAggregateInputType = {
   userID?: true
   bagNo?: true
   isCollected?: true
+  email?: true
 }
 
 export type UserCountAggregateInputType = {
   userID?: true
   bagNo?: true
   isCollected?: true
+  email?: true
   _all?: true
 }
 
@@ -171,6 +177,7 @@ export type UserGroupByOutputType = {
   userID: number
   bagNo: string | null
   isCollected: boolean | null
+  email: string | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -200,12 +207,14 @@ export type UserWhereInput = {
   userID?: Prisma.IntFilter<"User"> | number
   bagNo?: Prisma.StringNullableFilter<"User"> | string | null
   isCollected?: Prisma.BoolNullableFilter<"User"> | boolean | null
+  email?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
 export type UserOrderByWithRelationInput = {
   userID?: Prisma.SortOrder
   bagNo?: Prisma.SortOrderInput | Prisma.SortOrder
   isCollected?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -216,12 +225,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   bagNo?: Prisma.StringNullableFilter<"User"> | string | null
   isCollected?: Prisma.BoolNullableFilter<"User"> | boolean | null
+  email?: Prisma.StringNullableFilter<"User"> | string | null
 }, "userID">
 
 export type UserOrderByWithAggregationInput = {
   userID?: Prisma.SortOrder
   bagNo?: Prisma.SortOrderInput | Prisma.SortOrder
   isCollected?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -236,48 +247,56 @@ export type UserScalarWhereWithAggregatesInput = {
   userID?: Prisma.IntWithAggregatesFilter<"User"> | number
   bagNo?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   isCollected?: Prisma.BoolNullableWithAggregatesFilter<"User"> | boolean | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
   userID: number
   bagNo?: string | null
   isCollected?: boolean | null
+  email?: string | null
 }
 
 export type UserUncheckedCreateInput = {
   userID: number
   bagNo?: string | null
   isCollected?: boolean | null
+  email?: string | null
 }
 
 export type UserUpdateInput = {
   userID?: Prisma.IntFieldUpdateOperationsInput | number
   bagNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCollected?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateInput = {
   userID?: Prisma.IntFieldUpdateOperationsInput | number
   bagNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCollected?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCreateManyInput = {
   userID: number
   bagNo?: string | null
   isCollected?: boolean | null
+  email?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
   userID?: Prisma.IntFieldUpdateOperationsInput | number
   bagNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCollected?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
   userID?: Prisma.IntFieldUpdateOperationsInput | number
   bagNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isCollected?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserOrderByRelevanceInput = {
@@ -290,6 +309,7 @@ export type UserCountOrderByAggregateInput = {
   userID?: Prisma.SortOrder
   bagNo?: Prisma.SortOrder
   isCollected?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -300,12 +320,14 @@ export type UserMaxOrderByAggregateInput = {
   userID?: Prisma.SortOrder
   bagNo?: Prisma.SortOrder
   isCollected?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   userID?: Prisma.SortOrder
   bagNo?: Prisma.SortOrder
   isCollected?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -334,6 +356,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userID?: boolean
   bagNo?: boolean
   isCollected?: boolean
+  email?: boolean
 }, ExtArgs["result"]["user"]>
 
 
@@ -342,9 +365,10 @@ export type UserSelectScalar = {
   userID?: boolean
   bagNo?: boolean
   isCollected?: boolean
+  email?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userID" | "bagNo" | "isCollected", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userID" | "bagNo" | "isCollected" | "email", ExtArgs["result"]["user"]>
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -353,6 +377,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     userID: number
     bagNo: string | null
     isCollected: boolean | null
+    email: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -725,6 +750,7 @@ export interface UserFieldRefs {
   readonly userID: Prisma.FieldRef<"User", 'Int'>
   readonly bagNo: Prisma.FieldRef<"User", 'String'>
   readonly isCollected: Prisma.FieldRef<"User", 'Boolean'>
+  readonly email: Prisma.FieldRef<"User", 'String'>
 }
     
 

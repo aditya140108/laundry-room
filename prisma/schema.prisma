@@ -11,6 +11,8 @@ model User {
   userID      Int      @id
   bagNo       String?  @db.VarChar(4)
   isCollected Boolean? @default(true)
+  email       String? @db.VarChar(255)
 
+  
   @@map("user")
 }
