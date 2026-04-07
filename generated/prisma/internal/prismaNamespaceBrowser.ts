@@ -74,7 +74,8 @@ export const UserScalarFieldEnum = {
   userID: 'userID',
   bagNo: 'bagNo',
   isCollected: 'isCollected',
-  email: 'email'
+  email: 'email',
+  name: 'name'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -98,7 +99,8 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 export const UserOrderByRelevanceFieldEnum = {
   bagNo: 'bagNo',
-  email: 'email'
+  email: 'email',
+  name: 'name'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]

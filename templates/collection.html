@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laundry Notification</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      font-family: Arial, sans-serif;
+    }
+
+    .wrapper {
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .content {
+      padding: 40px 32px;
+    }
+
+    h2 {
+      color: #111827;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #374151;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 16px 0;
+    }
+
+    .highlight {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 24px 0;
+      font-weight: 500;
+      color: #92400e;
+      font-size: 16px;
+    }
+
+    .notice {
+      background: #eff6ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 24px 0;
+      color: #1e40af;
+      font-weight: 500;
+    }
+
+    .footer {
+      background: #f9fafb;
+      padding: 24px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .footer strong {
+      color: #111827;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <div class="container">
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <p>Hello {{name}},</p>
+
+        <h2>Your laundry is ready for collection 🧺</h2>
+
+        <div class="highlight">
+          Bag Number: <strong>{{bagNo}}</strong>
+        </div>
+
+        <div class="notice">
+          Please collect your laundry from the collection room at your convenience.
+        </div>
+
+        <p>
+          If this is not your bag, please reply to this email immediately.
+        </p>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <p>
+          This is an automated message from the <strong>Ministry of Technology</strong>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
