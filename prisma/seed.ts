@@ -4,23 +4,29 @@ async function main() {
     await prisma.user.createMany({
         data: [
             {
-                userID: 1,
+                userID: 1020251111,
                 name: "Alice Johnson",
                 email: "alice@example.com",
-                bagNo: "BAG001",
+                bagNo: "AA11",
             },
             {
-                userID: 2,
+                userID: 1020252222,
                 name: "Bob Smith",
                 email: "bob@example.com",
-                bagNo: "BAG002",
+                bagNo: "AA22",
             },
             {
-                userID: 3,
+                userID: 1020253333,
                 name: "Charlie Brown",
                 email: "charlie@example.com",
-                bagNo: "BAG003",
+                bagNo: "AA33",
             },
+            {
+                userID: 1020254444,
+                name: "David Lee",
+                email: "david@example.com",
+                bagNo: "AA44",
+            }
         ],
     });
 
