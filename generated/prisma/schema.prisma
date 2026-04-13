@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  userID Int     @id @default(autoincrement())
+  name   String? @db.VarChar(100)
+  email  String? @db.VarChar(255)
+
+  bagNo String @db.VarChar(255)
+
+  status Status @default(COLLECTED)
+
+  lastCollectedBy Int?
+
+  lastSubmitted DateTime?
+  lastReady     DateTime?
+  lastCollected DateTime?
+}
+
+enum Status {
+  SUBMITTED
+  READY
+  COLLECTED
+}
