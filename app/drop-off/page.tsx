@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const HARDCODED_USER_ID = 1; // change this to whichever userID you want to test with
+const HARDCODED_USER_ID = 1020251110; // change this to whichever userID you want to test with
 
 export default function DropOffPage() {
     const [items, setItems] = useState("");

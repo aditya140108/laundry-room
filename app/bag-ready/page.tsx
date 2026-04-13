@@ -4,14 +4,16 @@ import { useState } from "react";
 
 export default function Home() {
   const [bagNo, setBagNo] = useState("");
-  const [result, setResult] = useState<null | boolean>(null);
+  const [status, setStatus] = useState<null | "found" | "not-found">(null);
+  const [emailSent, setEmailSent] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
   const checkBag = async () => {
     if (!bagNo) return;
 
     setLoading(true);
-    setResult(null);
+    setStatus(null);
+    setEmailSent(null);
 
     try {
       const res = await fetch("/api/check-bag", {
@@ -19,23 +21,35 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ bagNo: bagNo.trim().toUpperCase() }),
+        body: JSON.stringify({
+          bagNo: bagNo.trim().toUpperCase(),
+        }),
       });
 
       const data = await res.json();
-      setResult(data.exists);
-    } catch (error) {
-      console.error(error);
-      setResult(false);
-    }
 
-    setLoading(false);
+      if (!data.exists) {
+        setStatus("not-found");
+        setLoading(false);
+        return;
+      }
+
+      // bag found
+      setStatus("found");
+      setEmailSent(data.emailSent ?? null);
+
+    } catch (err) {
+      console.error(err);
+      setStatus("not-found");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center p-4 bg-white min-h-screen">
       <div className="w-full max-w-sm flex flex-col gap-4">
-        
+
         {/* Input + Button */}
         <div className="flex gap-2">
           <input
@@ -55,16 +69,31 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Result */}
-        {result !== null && (
+        {/* Bag Status */}
+        {status && (
           <div
             className={`text-center px-4 py-2 rounded-md font-medium ${
-              result
+              status === "found"
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
             }`}
           >
-            {result ? "✅ Bag Found" : "❌ Bag Not Found"}
+            {status === "found" ? "✅ Bag Logged as Ready" : "❌ Bag Not Found"}
+          </div>
+        )}
+
+        {/* Email Status */}
+        {status === "found" && emailSent !== null && (
+          <div
+            className={`text-center px-4 py-2 rounded-md font-medium ${
+              emailSent
+                ? "bg-blue-100 text-blue-700"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
+          >
+            {emailSent
+              ? "📧 Email sent to user"
+              : "⚠️ No email on file for this user"}
           </div>
         )}
 
