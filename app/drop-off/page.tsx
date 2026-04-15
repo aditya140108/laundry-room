@@ -2,22 +2,33 @@
 
 import { useState } from "react";
 
-const HARDCODED_USER_ID = 1020251110; // change this to whichever userID you want to test with
-
 export default function DropOffPage() {
     const [items, setItems] = useState("");
     const [loading, setLoading] = useState(false);
-    const [done, setDone] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSubmit = async () => {
+        const itemCount = parseInt(items, 10);
+
+        if (isNaN(itemCount) || itemCount <= 0) {
+            setError("Number of clothes cannot be less than 1");
+            return;
+        }
+
+        setError("");
         setLoading(true);
-        await fetch("/api/drop-off", {
+        const res = await fetch("/api/drop-off", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userID: HARDCODED_USER_ID }),
+            body: JSON.stringify({ userID: 1020251111 }),
         });
         setLoading(false);
-        setDone(true);
+
+        const data = await res.json();
+        if (!res.ok) {
+            setError(data.error || "Something went wrong");
+            return;
+        }
     };
 
     return (
@@ -28,9 +39,10 @@ export default function DropOffPage() {
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100vh",
+                gap: "1rem",
             }}
         >
-            <p style={{ fontSize: "1.25rem", marginBottom: "1rem" }}>
+            <p style={{ fontSize: "1.25rem" }}>
                 Enter Number of Items
             </p>
             <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -38,7 +50,10 @@ export default function DropOffPage() {
                     type="number"
                     placeholder="e.g. 5"
                     value={items}
-                    onChange={(e) => setItems(e.target.value)}
+                    onChange={(e) => {
+                        setItems(e.target.value);
+                        setError("");
+                    }}
                     style={{
                         padding: "0.5rem 1rem",
                         fontSize: "1rem",
@@ -59,9 +74,14 @@ export default function DropOffPage() {
                         cursor: loading ? "not-allowed" : "pointer",
                     }}
                 >
-                    {loading ? "Submitting..." : done ? "Submitted!" : "Submit"}
+                    {loading ? "Submitting..." : "Submit"}
                 </button>
             </div>
+            {error && (
+                <p style={{ color: "red", marginTop: "0.5rem", fontSize: "0.875rem" }}>
+                    {error}
+                </p>
+            )}
         </main>
     );
 }
