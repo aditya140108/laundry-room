@@ -46,9 +46,10 @@ export default function Home() {
         setStatus(null); // ❌ don't show success
         setMessage(data.message);
         setEmailSent(null);
+        setTimeout(resetUI, 2500)
         return;
       }
-      
+
       setStatus("found");
       setEmailSent(data.emailSent ?? null);
 
@@ -89,11 +90,10 @@ export default function Home() {
         {/* 🔹 Status */}
         {status && (
           <div
-            className={`text-center px-4 py-2 rounded-md font-medium ${
-              status === "found"
+            className={`text-center px-4 py-2 rounded-md font-medium ${status === "found"
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
-            }`}
+              }`}
           >
             {status === "found"
               ? "✅ Bag Logged as Ready"
@@ -111,11 +111,10 @@ export default function Home() {
         {/* 🔹 Email */}
         {status === "found" && emailSent !== null && !message && (
           <div
-            className={`text-center px-4 py-2 rounded-md font-medium ${
-              emailSent
+            className={`text-center px-4 py-2 rounded-md font-medium ${emailSent
                 ? "bg-blue-100 text-blue-700"
                 : "bg-yellow-100 text-yellow-700"
-            }`}
+              }`}
           >
             {emailSent
               ? "📧 Email sent to user"
