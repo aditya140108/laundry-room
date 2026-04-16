@@ -5,13 +5,25 @@ import { useState } from "react";
 export default function PickupPage() {
   const [userID, setUserID] = useState("");
   const [userName, setUserName] = useState("");
-  const [userBags, setUserBags] = useState<string[]>([]);
+  const [userBags, setUserBags] = useState<
+    { bagNo: string; status: string }[]
+  >([]);
   const [selectedBags, setSelectedBags] = useState<string[]>([]);
   const [manualInput, setManualInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // 🔹 Fetch user (simulate QR scan)
+  // 🔹 Reset UI
+  const resetUI = () => {
+    setUserName("");
+    setUserBags([]);
+    setSelectedBags([]);
+    setManualInput("");
+    setUserID("");
+    setMessage("");
+  };
+
+  // 🔹 Fetch user
   const fetchUser = async () => {
     if (!userID) return;
 
@@ -31,56 +43,54 @@ export default function PickupPage() {
       });
 
       const data = await res.json();
+      console.log("API:", data);
 
       if (data.error) {
         setMessage(data.error);
         setUserBags([]);
         return;
       }
-      // Status check
-      if (data.status === "COLLECTED") {
-        setMessage('Your bag has already been collected.');
-        setUserBags([]);
-        setTimeout(() => {
-          setUserName("");
-          setUserBags([]);
-          setSelectedBags([]);
-          setManualInput("");
-          setUserID('');
-          setMessage("")
-          setLoading(false)
-        }, 1500);
-        return;
-      }
-      if (data.status === "SUBMITTED") {
-        setMessage("Your bag is not ready yet. Please come back later.");
-        setUserBags([]);
 
-        setTimeout(() => {
-          setUserName("");
-          setUserBags([]);
-          setSelectedBags([]);
-          setManualInput("");
-          setUserID('');
-          setMessage("")
-          setLoading(false);
-        }, 1500);
+      // 🔥 Separate bags by status
+      const readyBags = data.bags.filter(
+        (b: any) => b.status === "READY"
+      );
+
+      if (readyBags.length === 0) {
+        const hasCollected = data.bags.some(
+          (b: any) => b.status === "COLLECTED"
+        );
+      
+        const hasSubmitted = data.bags.some(
+          (b: any) => b.status === "SUBMITTED"
+        );
+      
+        if (hasCollected) {
+          setMessage("Your bag has already been collected.");
+        } else if (hasSubmitted) {
+          setMessage("Your bag is not ready yet. Please come back later.");
+        } else {
+          setMessage("No bags found.");
+        }
+      
+        setUserBags([]);
+        setTimeout(resetUI, 1500);
         return;
       }
 
       setUserName(data.name || "User");
-      setUserBags(data.bags);
+      setUserBags(readyBags);
       setSelectedBags([]);
+
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong");
+    } finally {
+      setLoading(false); // 🔥 always runs
     }
-
-    setLoading(false);
-
   };
 
-
+  // 🔹 Toggle bag
   const toggleBag = (bag: string) => {
     setSelectedBags((prev) =>
       prev.includes(bag)
@@ -118,23 +128,18 @@ export default function PickupPage() {
       if (data.error) {
         setMessage(data.error);
       } else {
-        setMessage("Pickup successful");
-        setTimeout(() => {
-          setUserName("");
-          setUserBags([]);
-          setSelectedBags([]);
-          setManualInput("");
-          setUserID('');
-          setMessage("")
-        }, 2500);
-      }
+        setMessage("✅ Pickup successful");
 
+        setTimeout(() => {
+          resetUI();
+        }, 2000);
+      }
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -148,34 +153,37 @@ export default function PickupPage() {
             placeholder="Enter User ID"
             value={userID}
             onChange={(e) => setUserID(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-black focus:outline-none focus:ring-2 focus:ring-grey-500"
+            className="flex-1 px-4 py-2 border rounded-md"
           />
 
           <button
             onClick={fetchUser}
-            disabled={loading}
-            className="px-6 py-2 bg-gray-500 hover:bg-red-700 text-white font-medium rounded-md shadow-sm cursor-pointer transition-colors disabled:opacity-50"
+            disabled={loading || !userID}
+            className="px-6 py-2 bg-gray-600 text-white rounded-md disabled:opacity-50"
           >
-            Fetch User
+            {loading ? "Loading..." : "Fetch User"}
           </button>
         </div>
 
         {/* 🔹 Message */}
         {message && (
           <div
-            className={`text-center text-sm ${message.includes("not ready")
+            className={`text-center text-sm ${
+              message.includes("not ready")
                 ? "text-blue-600"
                 : message.includes("already")
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
+                ? "text-yellow-600"
+                : message.includes("successful")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
           >
             {message}
           </div>
         )}
 
         {/* 🔹 User Info */}
-        {userBags && userBags.length > 0 && (
+        {userBags.length > 0 && (
           <>
             <div className="text-center font-medium">
               Hello {userName}
@@ -185,14 +193,15 @@ export default function PickupPage() {
             <div className="flex flex-wrap gap-2 justify-center">
               {userBags.map((bag) => (
                 <button
-                  key={bag}
-                  onClick={() => toggleBag(bag)}
-                  className={`px-4 py-2 rounded cursor-pointer ${selectedBags.includes(bag)
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-200"
-                    }`}
+                  key={bag.bagNo}
+                  onClick={() => toggleBag(bag.bagNo)}
+                  className={`px-4 py-2 rounded ${
+                    selectedBags.includes(bag.bagNo)
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-200"
+                  }`}
                 >
-                  {bag}
+                  {bag.bagNo}
                 </button>
               ))}
             </div>
@@ -210,7 +219,7 @@ export default function PickupPage() {
             <button
               onClick={handlePickup}
               disabled={loading}
-              className="bg-red-600 text-white py-2 rounded-md cursor-pointer"
+              className="bg-red-600 text-white py-2 rounded-md"
             >
               {loading ? "Processing..." : "Pick Up"}
             </button>

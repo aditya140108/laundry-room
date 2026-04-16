@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `clothesCount` INTEGER NULL DEFAULT 0;
