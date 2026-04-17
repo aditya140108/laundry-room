@@ -25,7 +25,7 @@ export default function Home() {
     setMessage("");
 
     try {
-      const res = await fetch("/api/check-bag", {
+      const res = await fetch("/api/bag-ready", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
