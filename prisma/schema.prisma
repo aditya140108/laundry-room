@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,16 +7,18 @@ datasource db {
 }
 
 model User {
-  userID           Int      @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
+  userID           Int
   name             String?  @db.VarChar(100)
   email            String?  @db.VarChar(255)
 
-  bagNo            String   @db.VarChar(255) 
+  bagNo            String   @unique @db.VarChar(10)
 
   status           Status   @default(COLLECTED)
 
-  lastCollectedBy  Int?
+  clothesCount     Int?     @default(0)
 
+  lastCollectedBy  Int?
   lastSubmitted    DateTime?
   lastReady        DateTime?
   lastCollected    DateTime?

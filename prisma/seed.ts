@@ -22,6 +22,12 @@ async function main() {
                 bagNo: "AA33",
             },
             {
+                userID: 1020253333,
+                name: "Charlie Brown",
+                email: "charlie@example.com",
+                bagNo: "AA34",
+            },
+            {
                 userID: 1020254444,
                 name: "David Lee",
                 email: "david@example.com",

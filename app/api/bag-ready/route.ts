@@ -9,32 +9,44 @@ export async function POST(req: Request) {
     const { bagNo } = await req.json();
     const cleanBag = bagNo.trim().toUpperCase();
 
-    // 1️⃣ Find which user owns this bag
-    const users = await prisma.user.findMany();
-
-    const owner = users.find((u) => {
-      const bags = (u.bagNo || "")
-        .split(",")
-        .map((b) => b.trim().toUpperCase());
-
-      return bags.includes(cleanBag);
+    // 🔍 Find bag
+    const bag = await prisma.user.findFirst({
+      where: { bagNo: cleanBag },
     });
 
-    if (!owner) {
+    if (!bag) {
       return Response.json({ exists: false });
     }
 
-    // 2️⃣ Update status → READY
+    // 🚨 STATUS CHECKS
+
+    if (bag.status === Status.READY) {
+      return Response.json({
+        exists: true,
+        emailSent: false,
+        message: "Bag is already marked as ready.",
+      });
+    }
+
+    if (bag.status === Status.COLLECTED) {
+      return Response.json({
+        exists: true,
+        emailSent: false,
+        message: "Bag has already been collected.",
+      });
+    }
+
+    // ✅ ONLY SUBMITTED → READY
     await prisma.user.update({
-      where: { userID: owner.userID },
+      where: { id: bag.id },
       data: {
         status: Status.READY,
         lastReady: new Date(),
       },
     });
 
-    // 3️⃣ Send email (if email exists)
-    if (!owner.email) {
+    // 📧 Send email
+    if (!bag.email) {
       return Response.json({
         exists: true,
         emailSent: false,
@@ -46,11 +58,11 @@ export async function POST(req: Request) {
 
     html = html
       .replace(/{{bagNo}}/g, cleanBag)
-      .replace(/{{name}}/g, owner.name || "User");
+      .replace(/{{name}}/g, bag.name || "User");
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: owner.email,
+      to: bag.email,
       subject: "Laundry Update",
       html,
     });
@@ -59,6 +71,7 @@ export async function POST(req: Request) {
       exists: true,
       emailSent: true,
     });
+
   } catch (err) {
     console.error(err);
     return Response.json(

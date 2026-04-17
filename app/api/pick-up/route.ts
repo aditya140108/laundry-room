@@ -1,65 +1,62 @@
 import { prisma } from "@/lib/prisma";
 import { Status } from "@prisma/client";
 
-const TEST_IDS = [1020251110, 1020251111, 1020251112];
-
 export async function POST(req: Request) {
   try {
-    const { userID, action, selectedBags = [], manualBags = [] } =
-      await req.json();
+    const body = await req.json();
 
-    if (!TEST_IDS.includes(userID)) {
+    const userID = Number(body.userID);
+    const action = body.action;
+    const selectedBags = body.selectedBags || [];
+    const manualBags = body.manualBags || [];
+
+    if (!userID) {
       return Response.json({ error: "Invalid user ID" }, { status: 400 });
     }
 
     // =========================
-    // FETCH
+    // 🔹 FETCH USER BAGS
     // =========================
     if (action === "fetch") {
-      const user = await prisma.user.findUnique({
+      const bags = await prisma.user.findMany({
         where: { userID },
       });
-    
-      if (!user) {
+
+      if (!bags.length) {
         return Response.json({ error: "User not found" }, { status: 404 });
       }
-    
-      const bags = (user.bagNo || "")
-        .split(",")
-        .map((b) => b.trim())
-        .filter(Boolean);
-    
+
       return Response.json({
-        name: user.name,
-        status: user.status,
-        bags,
+        name: bags[0].name,
+        bags: bags.map((b) => ({
+          bagNo: b.bagNo,
+          status: b.status,
+        })),
       });
     }
 
     // =========================
-    // PICKUP
+    // 🔹 PICKUP
     // =========================
     if (action === "pickup") {
       const allBags = [
         ...selectedBags,
-        ...manualBags.map((b: string) => b.trim()),
+        ...manualBags.map((b: string) => b.trim().toUpperCase()),
       ];
 
-      const users = await prisma.user.findMany();
+      if (allBags.length === 0) {
+        return Response.json({ error: "No bags selected" }, { status: 400 });
+      }
 
       for (const bag of allBags) {
-        const owner = users.find((u) => {
-          const bags = (u.bagNo || "")
-            .split(",")
-            .map((b) => b.trim());
-
-          return bags.includes(bag);
+        const existing = await prisma.user.findUnique({
+          where: { bagNo: bag },
         });
 
-        if (!owner) continue;
+        if (!existing) continue;
 
         await prisma.user.update({
-          where: { userID: owner.userID },
+          where: { bagNo: bag },
           data: {
             status: Status.COLLECTED,
             lastCollectedBy: userID,
@@ -74,7 +71,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid action" }, { status: 400 });
 
   } catch (err) {
-    console.error(err);
+    console.error("API ERROR:", err);
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
